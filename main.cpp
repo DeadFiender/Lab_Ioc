@@ -1,33 +1,61 @@
-#include <QCoreApplication>
-using namespace std;
-#include<IOC_Contaner.h>
+#include "Example.h"
+#include "Compucter.h"
+#include "IOC_Contaner.h"
+
+IOCContainer gContainer;
+
+// инициализируем ненулевым числом
+int IOCContainer::s_nextTypeId = 115094801;
 
 int main(int argc, const char *argv[])
 {
-    //------Example #1----------------
-    //Injector injector;
     IOCContainer injector;
 
-    // Регистрируем IHello с классом Hello, т.о. каждый раз запрашивая IHell получаем объект Hello.
-    injector.RegisterInstance<IHello, Hello>();
-    auto helloInstance = injector.GetObject<IHello>();
-    helloInstance->hello();
-    injector.RegisterInstance<IHello, Privet>();
+    // === Регистрируем начальные параметры ===
+    injector.RegisterInstance<double>(std::make_shared<double>(3.5)); // GHz
+    injector.RegisterInstance<ProcessorType>(std::make_shared<ProcessorType>(x64));
+    injector.RegisterInstance<std::string>(std::make_shared<std::string>("i7-12700K"));
 
-    //Здесь, после регистрации получим объект Privet
-    helloInstance = injector.GetObject<IHello>();
-    helloInstance->hello();
+    // === Intel Processor ===
+    injector.RegisterFunctor<IProcessor, double, ProcessorType, std::string>(
+        std::function<std::shared_ptr<IProcessor>(std::shared_ptr<double>,
+                                                  std::shared_ptr<ProcessorType>,
+                                                  std::shared_ptr<std::string>)>(
+            [](std::shared_ptr<double> speed,
+               std::shared_ptr<ProcessorType> type,
+               std::shared_ptr<std::string> model) -> std::shared_ptr<IProcessor> {
+                return std::make_shared<IntelProcessor>(*speed, *type, *model);
+            }));
 
-    //------Example #2----------------
+    injector.RegisterFactory<Computer, Computer, IProcessor>();
+    auto pc = injector.GetObject<Computer>();
 
-    gContainer.RegisterInstance<IAmAThing, TheThing>();
-    gContainer.RegisterFactory<IAmTheOtherThing, TheOtherThing, IAmAThing>();
+    std::cout << "Intel processor: ";
+    pc->configure();
 
-    gContainer.GetObject<IAmAThing>()->TestThis();
-    gContainer.GetObject<IAmTheOtherThing>()->TheOtherTest();
+    // === AMD Processor: Ryzen 5 5600G, 3.5GHz, x64 ===
+    injector.RegisterInstance<std::string>(std::make_shared<std::string>("Ryzen 5 5600G"));
 
-    //Опять запршиваем объект,после последней регистрации получим объект Privet
-    helloInstance = injector.GetObject<IHello>();
-    helloInstance->hello();
+    injector.RegisterFunctor<IProcessor, double, ProcessorType, std::string>(
+        std::function<std::shared_ptr<IProcessor>(std::shared_ptr<double>,
+                                                  std::shared_ptr<ProcessorType>,
+                                                  std::shared_ptr<std::string>)>(
+            [](std::shared_ptr<double> speed,
+               std::shared_ptr<ProcessorType> type,
+               std::shared_ptr<std::string> model) -> std::shared_ptr<IProcessor> {
+                return std::make_shared<AMDProcessor>(*speed, *type, *model);
+            }));
+
+    pc->setProcessor(injector);
+    std::cout << "AMD processor: ";
+    pc->configure();
+
+    // === AMD Processor: Ryzen 5 5600G, 2.8GHz, x86 ===
+    injector.RegisterInstance<double>(std::make_shared<double>(2.8));
+    injector.RegisterInstance<ProcessorType>(std::make_shared<ProcessorType>(x86));
+    pc->setProcessor(injector);
+    std::cout << "AMD processor: ";
+    pc->configure();
+
     return 0;
 }
