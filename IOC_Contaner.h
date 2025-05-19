@@ -1,3 +1,6 @@
+#ifndef IOC_CONTAINER_H
+#define IOC_CONTAINER_H
+
 #include <functional>
 #include <iostream>
 #include <memory>
@@ -111,4 +114,4 @@ public:
         RegisterInstance<TInterface>(std::make_shared<TConcrete>(GetObject<TArguments>()...));
     }
 };
-
+#endif // IOC_CONTAINER_H

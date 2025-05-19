@@ -1,4 +1,4 @@
-#include "Example.h"
+//#include "Example.h"
 #include "Compucter.h"
 #include "IOC_Contaner.h"
 
