@@ -19,18 +19,22 @@ public:
         using namespace QtCharts;
 
         auto *series = new QPieSeries();
+        // Создание серии данных для круговой диаграммы.
 
         for (const auto& p : model.points) {
             QString label = p.first.toString("dd.MM");
             QPieSlice *slice = series->append(label, p.second);
+            // Добавление сегмента с меткой и значением.
 
             if (grayscale) {
                 slice->setBrush(QBrush(Qt::black));
+                // Если требуется чб, устанавливаем черный цвет для сегмента.
             }
         }
 
         auto *chart = new QChart();
         chart->addSeries(series);
+        // Создание графика и добавление в него серии данных.
         chart->setTitle("Круговая диаграмма");
         chart->legend()->setVisible(true);
         chart->legend()->setAlignment(Qt::AlignRight);
