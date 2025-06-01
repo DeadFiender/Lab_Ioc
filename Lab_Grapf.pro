@@ -13,8 +13,7 @@ SOURCES += \
         SQLiteReader.cpp \
         chartfactory.cpp \
         main.cpp \
-        mainwindow.cpp \
-        readerfactory.cpp
+        mainwindow.cpp
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
