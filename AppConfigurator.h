@@ -2,25 +2,23 @@
 #define APPCONFIGURATOR_H
 
 #include "ioc_container.h"
-#include "ReaderFactory.h"
-#include "ChartFactory.h"
 
 class AppConfigurator {
 public:
-    AppConfigurator() = default;
+    AppConfigurator() = default;// Конструктор по умолчанию.
 
     template<typename... Readers>
-    void registerReaders() {
+    void registerReaders() {// Метод регистрирует (Readers) в контейнере зависимостей.
         container.RegisterReaders<Readers...>();
     }
 
     template<typename... Charts>
-    void registerCharts() {
+    void registerCharts() {// Метод регистрирует (Charts) в контейнере зависимостей
         container.RegisterCharts<Charts...>();
     }
 
     IOCContainer& getContainer() {
-        return container;
+        return container;// Возвращает ссылку на контейнер зависимостей
     }
 
 private:

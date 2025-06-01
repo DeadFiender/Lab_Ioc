@@ -9,11 +9,14 @@ DataModel JsonReader::read(const QString& path) {
     QFile file(path);
 
     if (!file.open(QIODevice::ReadOnly)) return result;
+    // Открытие файла для чтения. Если файл не открывается, возвращается пустая модель данных.
 
     QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
     file.close();
+    // Чтение содержимого файла и преобразование его в объект `QJsonDocument`.
 
     if (!doc.isArray()) return result;
+    // Проверка, является ли документ массивом JSON. Если нет, возвращается пустая модель данных.
 
     QJsonArray array = doc.array();
     for (const auto& val : array) {
@@ -30,10 +33,14 @@ DataModel JsonReader::read(const QString& path) {
                 number = v.toDouble();
                 ok = true;
             }
+            // Обработка значений объекта JSON:
+            // - Если значение — строка, пытаемся парсить её как дату.
+            // - Если значение — число, сохраняем его.
         }
 
         if (dt.isValid() && ok)
             result.points.append({ dt, number });
+        // Если дата и число корректны, добавляем их в модель данных.
     }
 
     return result;
@@ -41,4 +48,5 @@ DataModel JsonReader::read(const QString& path) {
 
 QString JsonReader::get() const {
     return "json";
+    // Возвращает строку "json", указывая, что данный читатель работает с JSON-файлами.
 }

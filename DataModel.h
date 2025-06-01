@@ -7,6 +7,8 @@
 
 struct DataModel {
     QVector<QPair<QDateTime, double>> points;
+    // Структура данных для хранения точек графика.
+    // Каждая точка представляет собой пару: дата (`QDateTime`) и значение (`double`).
 };
 
 #endif // DATAMODEL_H

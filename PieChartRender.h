@@ -12,6 +12,7 @@ class PieChartRender : public IChartRender {
 public:
     bool canRender(const QString& type) const override {
         return type == "pie";
+        // Метод проверяет, может ли данный класс рендерить круговую диаграмму.
     }
 
     QtCharts::QChartView* render(const DataModel& model, bool grayscale = false) override {
