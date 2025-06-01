@@ -11,7 +11,6 @@ SOURCES += \
         IDataReader.cpp \
         JsonReader.cpp \
         SQLiteReader.cpp \
-        chartfactory.cpp \
         main.cpp \
         mainwindow.cpp
 
