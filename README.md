@@ -57,6 +57,6 @@
 2. Для нового типа графика:
    - Наследование от `IChartRender` и реализация его методов
    - Добавить в
-          ``` c++
+     ``` c++
      config.registerCharts<LineChartRender, BarChartRender, PieChartRender, ScatterChartRender, новый тип графика>();
      ```
