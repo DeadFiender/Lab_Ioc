@@ -25,16 +25,16 @@ public:
         auto *set = new QBarSet("Значения");// Каждый столбец будет иметь имя "Значения".
         QStringList categories;// Список категорий (меток для оси X).
 
-        for (const auto& p : model.points) {
-            *set << p.second;
+        for (const auto& p : model.points) {//проход по всем парам дата-значение
+            *set << p.second;//добавление в контейнер сет значений
             categories << p.first.toString("dd.MM");// Преобразование даты (`p.first`) в строку формата "день.месяц" и добавление в категории.
         }
 
         if (grayscale)
             set->setColor(Qt::black);
 
-        auto *series = new QBarSeries();
-        series->append(set);
+        auto *series = new QBarSeries();//серия данных для столб диаграммы
+        series->append(set);//Метод append добавляет набор данных (set) в серию QBarSeries
 
         auto *chart = new QChart();
         chart->addSeries(series);// Создание графика

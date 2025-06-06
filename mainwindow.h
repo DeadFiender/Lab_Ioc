@@ -35,13 +35,13 @@ private slots:
     void onPrintClicked();// Слот для печати графика в PDF.
 
 private:
-    QPushButton *loadFolderButton;
-    QTreeView *fileTree;
-    QFileSystemModel *fileModel;
-    QComboBox *chartSelector;
-    QCheckBox *grayscaleCheck;
-    QPushButton *printButton;
-    QLabel *statusLabel;
+    QPushButton *loadFolderButton;//Загружает папку с файлами
+    QTreeView *fileTree;//Отображает дерево файлов и папок
+    QFileSystemModel *fileModel;//Предоставляет данные о файловой системе
+    QComboBox *chartSelector;//Позволяет выбрать тип графика
+    QCheckBox *grayscaleCheck;//Переключает режим цвета
+    QPushButton *printButton;//Экспортирует график в PDF
+    QLabel *statusLabel;//Отображает статусные сообщения.
 
     QtCharts::QChartView *chartView = nullptr;// Виджет для отображения графика.
 

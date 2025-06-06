@@ -22,7 +22,7 @@ MainWindow::MainWindow(std::shared_ptr<ChartFactory> chartFactory,
     // === Левый блок: дерево файлов ===
     fileModel = new QFileSystemModel(this);
     fileModel->setRootPath(QDir::currentPath());
-    // Создание модели файловой системы и установка корневого пути (текущая директория)
+    // Создание модели файловой системы и установка корневого пути
 
     fileTree = new QTreeView(this);
     fileTree->setModel(fileModel);
