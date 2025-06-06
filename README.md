@@ -15,15 +15,11 @@
       - **ChartFactory** (LineChart, ScatterChart и др.)
    - `AppConfigurator` настраивает контейнер в одном месте.
    - `GetObject<ReaderFactory>()` и `GetObject<ChartFactory>()` передаются в `MainWindow`.
-2. Адаптер
-   - `JsonReader` — адаптирует JSON-файл к интерфейсу `IDataReader` 
-   - `SqlReader` — адаптирует SQLite к тому же интерфейсу
-   - MainWindow взаимодействует с DataModel, а не с конкретными реализациями
-3. Стратегия
+2. Стратегия
    - `IChartRender` - интерфейс стратегии
    - `ChartRender` - хранит конкретные стратегии с помощью указателей
    - `LineChartRender` и др. - конкретные стратегии
-4. Изменения в IOC
+3. Изменения в IOC
    - Внедрение функций для регистрации всех Reader и Chart
    ``` c++
        template<typename... ReaderTs>
