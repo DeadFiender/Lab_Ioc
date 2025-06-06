@@ -1,61 +1,33 @@
-#include "Example.h"
-#include "Compucter.h"
-#include "IOC_Contaner.h"
+#include "mainwindow.h"
+#include "AppConfigurator.h"
+#include "JsonReader.h"
+#include "SQLiteReader.h"
+#include "LineChartRender.h"
+#include "BarChartRender.h"
+#include "PieChartRender.h"
+#include "ScatterChartRender.h"
+#include <QApplication>
 
-IOCContainer gContainer;
-
-// инициализируем ненулевым числом
 int IOCContainer::s_nextTypeId = 115094801;
 
-int main(int argc, const char *argv[])
+int main(int argc, char *argv[])
 {
-    IOCContainer injector;
+    QApplication a(argc, argv);
 
-    // === Регистрируем начальные параметры ===
-    injector.RegisterInstance<double>(std::make_shared<double>(3.5)); // GHz
-    injector.RegisterInstance<ProcessorType>(std::make_shared<ProcessorType>(x64));
-    injector.RegisterInstance<std::string>(std::make_shared<std::string>("i7-12700K"));
+    AppConfigurator config;
+    config.registerReaders<JsonReader, SqlReader>();
+    // Регистрация Readers данных (JSON и SQLite).
+    config.registerCharts<LineChartRender, BarChartRender, PieChartRender, ScatterChartRender>();
+    // Регистрация рендеров графиков (линейный, столбчатый, круговой, точечный).
 
-    // === Intel Processor ===
-    injector.RegisterFunctor<IProcessor, double, ProcessorType, std::string>(
-        std::function<std::shared_ptr<IProcessor>(std::shared_ptr<double>,
-                                                  std::shared_ptr<ProcessorType>,
-                                                  std::shared_ptr<std::string>)>(
-            [](std::shared_ptr<double> speed,
-               std::shared_ptr<ProcessorType> type,
-               std::shared_ptr<std::string> model) -> std::shared_ptr<IProcessor> {
-                return std::make_shared<IntelProcessor>(*speed, *type, *model);
-            }));
+    auto readerFactory = config.getContainer().GetObject<ReaderFactory>();
+    // Получение фабрики Readers данных.
+    auto chartFactory  = config.getContainer().GetObject<ChartFactory>();
+    // Получение фабрики рендеров графиков.
 
-    injector.RegisterFactory<Computer, Computer, IProcessor>();
-    auto pc = injector.GetObject<Computer>();
+    MainWindow w(chartFactory, readerFactory);
+    // Создание главного окна приложения с передачей фабрик.
+    w.show();
 
-    std::cout << "Intel processor: ";
-    pc->configure();
-
-    // === AMD Processor: Ryzen 5 5600G, 3.5GHz, x64 ===
-    injector.RegisterInstance<std::string>(std::make_shared<std::string>("Ryzen 5 5600G"));
-
-    injector.RegisterFunctor<IProcessor, double, ProcessorType, std::string>(
-        std::function<std::shared_ptr<IProcessor>(std::shared_ptr<double>,
-                                                  std::shared_ptr<ProcessorType>,
-                                                  std::shared_ptr<std::string>)>(
-            [](std::shared_ptr<double> speed,
-               std::shared_ptr<ProcessorType> type,
-               std::shared_ptr<std::string> model) -> std::shared_ptr<IProcessor> {
-                return std::make_shared<AMDProcessor>(*speed, *type, *model);
-            }));
-
-    pc->setProcessor(injector);
-    std::cout << "AMD processor: ";
-    pc->configure();
-
-    // === AMD Processor: Ryzen 5 5600G, 2.8GHz, x86 ===
-    injector.RegisterInstance<double>(std::make_shared<double>(2.8));
-    injector.RegisterInstance<ProcessorType>(std::make_shared<ProcessorType>(x86));
-    pc->setProcessor(injector);
-    std::cout << "AMD processor: ";
-    pc->configure();
-
-    return 0;
+    return a.exec();
 }
